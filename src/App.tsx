@@ -6,7 +6,14 @@ import { MemoryGallery } from "./components/MemoryGallery";
 import { MusicControl } from "./components/MusicControl";
 import { Particles } from "./components/Particles";
 import { TypewriterText } from "./components/TypewriterText";
-import { storyConfig } from "./config/storyConfig";
+import {
+  getStoryKeyFromPath,
+  type ConversationSceneConfig,
+  type ImageSceneConfig,
+  type StoryConfig,
+  type StorySceneConfig,
+  storyConfigs,
+} from "./config/storyConfig";
 
 const sceneVariants = {
   center: {
@@ -30,33 +37,51 @@ const sceneDurations = [
   6200, 7200, 6200, 7000, 7600, 7000, 9500, 7600, 7800, 12000,
 ];
 
-const isBestFriendMemory = () =>
-  window.location.pathname.includes("/best-friend");
+const monthIndexes: Record<string, number> = {
+  January: 0,
+  February: 1,
+  March: 2,
+  April: 3,
+  May: 4,
+  June: 5,
+  July: 6,
+  August: 7,
+  September: 8,
+  October: 9,
+  November: 10,
+  December: 11,
+};
 
-function buildJulyDays(year: number) {
-  const firstDay = new Date(year, 6, 1).getDay();
+function buildMonthDays(month: string, year: number) {
+  const monthIndex = monthIndexes[month] ?? 6;
+  const firstDay = new Date(year, monthIndex, 1).getDay();
+  const dayCount = new Date(year, monthIndex + 1, 0).getDate();
   const blanks = Array.from({ length: firstDay }, () => null);
-  const days = Array.from({ length: 31 }, (_, index) => index + 1);
+  const days = Array.from({ length: dayCount }, (_, index) => index + 1);
   return [...blanks, ...days];
 }
 
-function CalendarGate({ onOpen }: { onOpen: () => void }) {
-  const { birthday } = storyConfig;
-  const julyDays = useMemo(() => buildJulyDays(birthday.year), [birthday.year]);
+function CalendarGate({ onOpen, story }: { onOpen: () => void; story: StoryConfig }) {
+  const { birthday } = story;
+  const monthDays = useMemo(
+    () => buildMonthDays(birthday.month, birthday.year),
+    [birthday.month, birthday.year],
+  );
+  const birthdayDay = String(birthday.day).padStart(2, "0");
 
   return (
     <section className="calendar-stage" aria-labelledby="calendar-title">
       <div className="calendar-intro">
         <p className="eyebrow">A birthday story unlocks on</p>
         <h1 id="calendar-title">
-          July <span>04</span>
+          {birthday.month} <span>{birthdayDay}</span>
         </h1>
         <p>
           Find the glowing date and tap it. The birthday wish opens from there.
         </p>
         <div className="birthday-badge" aria-hidden="true">
-          <strong>04</strong>
-          <span>July</span>
+          <strong>{birthdayDay}</strong>
+          <span>{birthday.month}</span>
         </div>
       </div>
 
@@ -73,13 +98,13 @@ function CalendarGate({ onOpen }: { onOpen: () => void }) {
         </div>
 
         <div className="date-grid">
-          {julyDays.map((day, index) =>
+          {monthDays.map((day, index) =>
             day ? (
               <button
                 aria-label={
                   day === birthday.day
-                    ? `Open birthday wish for July ${day}`
-                    : `July ${day}`
+                    ? `Open birthday wish for ${birthday.month} ${day}`
+                    : `${birthday.month} ${day}`
                 }
                 className={day === birthday.day ? "date is-birthday" : "date"}
                 key={day}
@@ -158,39 +183,59 @@ function TextReveal({
   );
 }
 
-function OneConversation() {
+function StoryParagraphs({ lines }: { lines: string[][] }) {
+  return (
+    <>
+      {lines.map((paragraph, paragraphIndex) => (
+        <p key={paragraph.join("-")}>
+          {paragraph.map((line, lineIndex) => (
+            <span key={line}>
+              {line}
+              {lineIndex < paragraph.length - 1 && <br />}
+            </span>
+          ))}
+          {paragraphIndex < lines.length - 1 && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
+        </p>
+      ))}
+    </>
+  );
+}
+
+function OneConversation({ scene }: { scene: ConversationSceneConfig }) {
   return (
     <section className="story-section conversation-section">
       <div className="conversation-copy">
-        <p className="eyebrow">One Conversation</p>
+        <p className="eyebrow">{scene.eyebrow}</p>
         <TypewriterText
           className="conversation-type"
-          lines={["Funny how", "one conversation", "can change everything."]}
+          lines={scene.lines}
           speed={36}
         />
       </div>
       <div className="chat-stack" aria-hidden="true">
-        {["Hey.", "You coming?", "Of course.", "That changed everything."].map(
-          (message, index) => (
-            <motion.span
-              animate={{ opacity: 1, x: 0, y: 0 }}
-              className={index % 2 ? "reply" : ""}
-              initial={{ opacity: 0, x: index % 2 ? 40 : -40, y: 24 }}
-              key={message}
-              transition={{ duration: 0.65, delay: index * 0.24 }}
-            >
-              {message}
-            </motion.span>
-          ),
-        )}
+        {scene.messages.map((message, index) => (
+          <motion.span
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            className={index % 2 ? "reply" : ""}
+            initial={{ opacity: 0, x: index % 2 ? 40 : -40, y: 24 }}
+            key={message}
+            transition={{ duration: 0.65, delay: index * 0.24 }}
+          >
+            {message}
+          </motion.span>
+        ))}
       </div>
     </section>
   );
 }
 
-function FinalReveal({ isActive }: { isActive: boolean }) {
+function FinalReveal({ isActive, story }: { isActive: boolean; story: StoryConfig }) {
   const firedRef = useRef(false);
-  const bestFriendMemory = isBestFriendMemory();
 
   useEffect(() => {
     if (!isActive || firedRef.current) return;
@@ -246,53 +291,80 @@ function FinalReveal({ isActive }: { isActive: boolean }) {
         <TypewriterText
           className="final-typing"
           delay={760}
-          lines={[
-            "This story...",
-            "...was never just about you.",
-            "It was always about us.",
-          ]}
+          lines={story.final.blackoutLines}
           speed={46}
         />
       </motion.div>
 
       <div className="final-image-wrap">
-        <img alt="Final memory together" src={storyConfig.images.finalTogether} />
+        <img alt={story.final.imageAlt} src={story.images.finalTogether} />
       </div>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="final-message"
+        className={`final-message align-${story.final.align ?? "left"}`}
         initial={{ opacity: 0, y: 60 }}
         transition={{ duration: 1.2, delay: 6.2 }}
       >
-        <p className="eyebrow">Happy Birthday</p>
-        <h2>{bestFriendMemory ? "My Best Friend ❤️" : "My Brother ❤️"}</h2>
+        <p className="eyebrow">{story.final.heading}</p>
+        <h2>{story.final.title}</h2>
         <p>
-          From strangers...
-          <br />
-          to someone I knew...
-          <br />
-          to one conversation...
-          <br />
-          to someone I trusted...
-          <br />
-          to countless memories...
-          <br />
-          to {bestFriendMemory ? "my best friend forever." : "my brother from another mother."}
+          {story.final.bodyLines.map((line, index) => (
+            <span key={line}>
+              {line}
+              {index < story.final.bodyLines.length - 1 && <br />}
+            </span>
+          ))}
         </p>
-        <small>Thank you for choosing to stay in my life.</small>
+        <small>{story.final.small}</small>
       </motion.div>
     </section>
   );
 }
 
-function StoryExperience({ onBack }: { onBack: () => void }) {
+function renderImageScene(scene: ImageSceneConfig, story: StoryConfig) {
+  return (
+    <ImageScene
+      align={scene.align}
+      eyebrow={scene.eyebrow}
+      image={story.images[scene.image]}
+      title={scene.title}
+    >
+      <StoryParagraphs lines={scene.lines} />
+    </ImageScene>
+  );
+}
+
+function renderStoryScene(scene: StorySceneConfig, story: StoryConfig) {
+  if (scene.type === "image") {
+    return renderImageScene(scene, story);
+  }
+
+  if (scene.type === "conversation") {
+    return <OneConversation scene={scene} />;
+  }
+
+  if (scene.type === "gallery") {
+    return (
+      <section className="story-section gallery-section">
+        <div className="section-kicker">
+          <p className="eyebrow">{scene.eyebrow}</p>
+          <h2>{scene.title}</h2>
+        </div>
+        <MemoryGallery memories={story.memories} />
+      </section>
+    );
+  }
+
+  return <TextReveal lines={scene.lines} title={scene.title} />;
+}
+
+function StoryExperience({ onBack, story }: { onBack: () => void; story: StoryConfig }) {
   const [activeScene, setActiveScene] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [sceneProgress, setSceneProgress] = useState(0);
   const wheelLockRef = useRef(false);
   const touchStartRef = useRef<number | null>(null);
-  const bestFriendMemory = isBestFriendMemory();
 
   const scenes = useMemo(
     () => [
@@ -300,147 +372,20 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
         label: "Intro",
         content: (
           <section className="intro-film">
-            <TypewriterText className="intro-type" lines={storyConfig.intro} />
+            <TypewriterText className="intro-type" lines={story.intro} />
           </section>
         ),
       },
-      {
-        label: "College",
-        content: (
-          <ImageScene
-            align="left"
-            image={storyConfig.images.college}
-            title="It all started here."
-          >
-            <p>
-              Among hundreds of faces...
-              <br />
-              there was one I never imagined
-              <br />
-              would become one of the most important people in my life.
-            </p>
-          </ImageScene>
-        ),
-      },
-      {
-        label: "Stranger",
-        content: (
-          <ImageScene
-            align="right"
-            eyebrow="A Stranger"
-            image={storyConfig.images.stranger}
-            title="A Stranger"
-          >
-            <p>
-              Just another person
-              <br />
-              walking through the same campus.
-              <br />
-              <br />
-              Nothing more.
-            </p>
-          </ImageScene>
-        ),
-      },
-      {
-        label: "Known",
-        content: (
-          <ImageScene
-            align="left"
-            image={storyConfig.images.familiar}
-            title="Someone I Knew"
-          >
-            <p>
-              You slowly became
-              <br />
-              a familiar face.
-              <br />
-              <br />
-              A familiar smile.
-              <br />
-              <br />
-              Someone I started noticing.
-            </p>
-          </ImageScene>
-        ),
-      },
-      {
-        label: "Conversation",
-        content: <OneConversation />,
-      },
-      {
-        label: "Trust",
-        content: (
-          <ImageScene
-            align="right"
-            image={storyConfig.images.trusted}
-            title="Someone I Trusted"
-          >
-            <p>
-              You became
-              <br />
-              someone I could rely on.
-              <br />
-              <br />
-              Someone I could always count on.
-            </p>
-          </ImageScene>
-        ),
-      },
-      {
-        label: "Memories",
-        content: (
-          <section className="story-section gallery-section">
-            <div className="section-kicker">
-              <p className="eyebrow">Many Memories</p>
-              <h2>Little frames. Big proof.</h2>
-            </div>
-            <MemoryGallery memories={storyConfig.memories} />
-          </section>
-        ),
-      },
-      {
-        label: "Losing",
-        content: (
-          <ImageScene
-            align="center"
-            image={storyConfig.images.losing}
-            title="Someone I Couldn't Imagine Losing"
-          >
-            <p>
-              Without realizing it...
-              <br />
-              <br />
-              you became
-              <br />
-              someone I couldn't imagine
-              <br />
-              my life without.
-            </p>
-          </ImageScene>
-        ),
-      },
-      {
-        label: bestFriendMemory ? "Best Friend" : "Brother",
-        content: (
-          <TextReveal
-            lines={[
-              "People say...",
-              "Family is by blood.",
-              "Life proved otherwise.",
-              "You became...",
-              bestFriendMemory ? "My Best Friend." : "My Brother.",
-            ]}
-            title="Unbreakable Bond"
-          />
-        ),
-      },
+      ...story.scenes.map((scene) => ({
+        label: scene.label,
+        content: renderStoryScene(scene, story),
+      })),
       {
         label: "Final",
-        content: <FinalReveal isActive={activeScene === 9} />,
+        content: <FinalReveal isActive={activeScene === story.scenes.length + 1} story={story} />,
       },
     ],
-    [activeScene],
+    [activeScene, story],
   );
 
   const goToScene = (index: number) => {
@@ -536,9 +481,9 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
   return (
     <div className="story-app story-deck" onTouchEnd={onTouchEnd} onTouchStart={onTouchStart} onWheel={onWheel}>
       <Particles />
-      <MusicControl src={storyConfig.audio.backgroundSrc} />
+      <MusicControl src={story.audio.backgroundSrc} />
       <button className="floating-control back-control" onClick={onBack} type="button">
-        July
+        {story.birthday.month}
       </button>
 
       <div className="scene-progress" aria-label="Story progress">
@@ -629,14 +574,16 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const storyKey = getStoryKeyFromPath(window.location.pathname);
+  const story = storyConfigs[storyKey];
 
   return (
     <main className={isOpen ? "birthday-app is-open" : "birthday-app"}>
       <div className="ambient-grid" />
       {!isOpen ? (
-        <CalendarGate onOpen={() => setIsOpen(true)} />
+        <CalendarGate onOpen={() => setIsOpen(true)} story={story} />
       ) : (
-        <StoryExperience onBack={() => setIsOpen(false)} />
+        <StoryExperience onBack={() => setIsOpen(false)} story={story} />
       )}
     </main>
   );
