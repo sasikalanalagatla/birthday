@@ -389,12 +389,15 @@ h2 {
 .final-typing {
   position: relative;
   z-index: 1;
-  width: min(900px, calc(100vw - 40px));
+  width: min(1040px, calc(100vw - 48px));
+  max-height: calc(100dvh - 220px);
+  padding: 0 4px 12px;
+  overflow-y: auto;
   color: #fffdf6;
   text-align: center;
-  font-size: clamp(30px, 6vw, 78px);
+  font-size: clamp(30px, 4.8vw, 68px);
   font-weight: 760;
-  line-height: 1.12;
+  line-height: 1.14;
 }
 
 .intro-type p,
@@ -530,8 +533,8 @@ h2 {
   margin-bottom: 24px;
   overflow-wrap: anywhere;
   text-wrap: balance;
-  font-size: clamp(42px, 8vw, 118px);
-  line-height: 0.9;
+  font-size: clamp(36px, 5.4vw, 82px);
+  line-height: 0.98;
 }
 
 .scene-text {
@@ -696,22 +699,26 @@ h2 {
 .text-reveal {
   display: grid;
   place-items: center;
-  padding: clamp(88px, 12vw, 150px) 20px;
+  padding: clamp(88px, 10vw, 128px) 20px clamp(128px, 13vw, 180px);
   text-align: center;
   background: #030405;
 }
 
 .text-reveal div {
   width: min(980px, 100%);
+  max-height: calc(100dvh - 240px);
   min-width: 0;
+  overflow-y: auto;
   overflow-wrap: anywhere;
 }
 
 .text-reveal h2 {
-  margin: 0.08em 0;
+  margin: 0.12em 0;
   max-width: 100%;
   overflow-wrap: anywhere;
   text-wrap: balance;
+  font-size: clamp(34px, 5.2vw, 72px);
+  line-height: 1.04;
 }
 
 .final-reveal {
@@ -1083,7 +1090,14 @@ h2 {
 
   .text-reveal {
     padding-right: 16px;
+    padding-bottom: 116px;
     padding-left: 16px;
+  }
+
+  .intro-type,
+  .final-typing,
+  .text-reveal div {
+    max-height: calc(100dvh - 180px);
   }
 
   .text-reveal h2 {
