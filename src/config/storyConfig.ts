@@ -315,13 +315,10 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
     images: bestFriendImages,
     intro: [
       "Every friendship has a story.",
-      "Some stories begin with a grand moment.",
-      "Ours didn't.",
-      "It began so quietly that neither of us realized we were starting something that would become one of the most beautiful chapters of our lives.",
-      "Looking back now, it's amazing how life works.",
-      "One unexpected meeting...",
-      "One simple conversation...",
-      "And a lifetime of memories waiting to happen."
+      "Ours began quietly.",
+      "One meeting.",
+      "One conversation.",
+      "And memories we still carry."
     ],
     memories: bestFriendMemories,
     scenes: [
@@ -333,9 +330,9 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
         image: "college",
         title: "Strangers",
         lines: [
-          ["At first...", "You were just another face in the crowd.", "Someone passing through the same college corridors.", "Someone I never imagined would one day become such an important part of my life."],
-          ["We had our own worlds.", "Our own routines.", "Our own friends."],
-          ["We were simply strangers.", "And somehow...", "Life had other plans."]
+          ["At first, you were just another face in college."],
+          ["We had our own worlds.", "Our own routines."],
+          ["We were strangers.", "Life had other plans."]
         ],
       },
       {
@@ -346,9 +343,9 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
         image: "stranger",
         title: "Classmates",
         lines: [
-          ["Then we became classmates.", "We attended the same lectures.", "Sat in the same classrooms.", "Walked through the same campus."],
-          ["Without realizing it, we started recognizing each other.", "A smile.", "A wave.", "A casual conversation."],
-          ["Sometimes, that's all destiny needs."]
+          ["Then we became classmates."],
+          ["Same lectures.", "Same classrooms.", "Same campus."],
+          ["A smile became familiar.", "A conversation became easy."]
         ],
       },
       {
@@ -356,13 +353,12 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
         label: "Conversation",
         eyebrow: "One Conversation",
         lines: [
-          "People often think life changes because of big moments.",
-          "But sometimes...",
-          "Everything changes because of one simple conversation.",
-          "A conversation that lasted a few minutes.",
-          "Yet somehow created a friendship that has lasted for years.",
-          "If someone had told me that day that we'd become best friends...",
-          "I probably wouldn't have believed them."
+          "Sometimes life changes quietly.",
+          "One simple conversation.",
+          "A few minutes.",
+          "A friendship for years.",
+          "I never expected it.",
+          "But I am grateful it happened."
         ],
         messages: ["Hey.", "You coming?", "Of course.", "That changed everything."],
       },
@@ -374,8 +370,8 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
         title: "Friends",
         lines: [
           ["Days turned into weeks.", "Weeks turned into months."],
-          ["Conversations became laughter.", "Laughter became memories.", "College became more enjoyable because you were part of it."],
-          ["Some of the best moments weren't planned.", "They simply happened...", "And somehow became unforgettable."]
+          ["Conversations became laughter.", "Laughter became memories."],
+          ["The best moments were not planned.", "They just became unforgettable."]
         ],
       },
       {
@@ -399,9 +395,9 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
         image: "trusted",
         title: "Best Friends",
         lines: [
-          ["At some point...", "You stopped being just another friend."],
-          ["You became the person I could always count on.", "The one who understood me without explanations.", "The one who celebrated my happiness.", "The one who stood beside me during difficult times."],
-          ["That's when I realized...", "Friendship had become something much deeper."]
+          ["At some point, you became more than a friend."],
+          ["Someone I could count on.", "Someone who understood me."],
+          ["That is when I knew this friendship was special."]
         ],
       },
       {
@@ -423,21 +419,19 @@ export const storyConfigs: Record<StoryKey, StoryConfig> = {
     final: {
       blackoutLines: [
         "Thank you...",
-        "For every conversation.",
         "For every laugh.",
         "For every memory.",
-        "For always being there."
+        "For being there."
       ],
       heading: "Happy Birthday!",
       title: "My Friend For Life ❤️",
       bodyLines: [
         "Thank you for becoming one of the most beautiful parts of my life.",
-        "Happy Birthday to the person who started as a stranger...",
-        "Became my classmate...",
-        "Turned into my friend...",
-        "Became my best friend...",
-        "And will always remain...",
-        "My Friend For Life."
+        "You started as a stranger.",
+        "Became my classmate.",
+        "Then my friend.",
+        "Then my best friend.",
+        "And always, my friend for life."
       ],
       imageAlt: "Final photo together",
       small: "No matter where life takes us, I hope we always have stories to tell, memories to cherish, and reasons to smile. Happy Birthday! 🎉",
