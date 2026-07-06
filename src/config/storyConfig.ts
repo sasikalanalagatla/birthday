@@ -34,11 +34,11 @@ const assetPath = (path: string) =>
 
 export const storyConfig: StoryConfig = {
   birthday: {
-    name: "Best Friend",
+    name: "Bro",
     month: "July",
     day: 4,
     year: 2026,
-    from: "Your best friend",
+    from: "Your brother",
   },
   audio: {
     backgroundSrc: "",

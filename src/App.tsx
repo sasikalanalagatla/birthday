@@ -30,6 +30,9 @@ const sceneDurations = [
   6200, 7200, 6200, 7000, 7600, 7000, 9500, 7600, 7800, 12000,
 ];
 
+const isBestFriendMemory = () =>
+  window.location.pathname.includes("/best-friend");
+
 function buildJulyDays(year: number) {
   const firstDay = new Date(year, 6, 1).getDay();
   const blanks = Array.from({ length: firstDay }, () => null);
@@ -187,6 +190,7 @@ function OneConversation() {
 
 function FinalReveal({ isActive }: { isActive: boolean }) {
   const firedRef = useRef(false);
+  const bestFriendMemory = isBestFriendMemory();
 
   useEffect(() => {
     if (!isActive || firedRef.current) return;
@@ -261,7 +265,7 @@ function FinalReveal({ isActive }: { isActive: boolean }) {
         transition={{ duration: 1.2, delay: 6.2 }}
       >
         <p className="eyebrow">Happy Birthday</p>
-        <h2>My Best Friend ❤️</h2>
+        <h2>{bestFriendMemory ? "My Best Friend ❤️" : "My Brother ❤️"}</h2>
         <p>
           From strangers...
           <br />
@@ -273,7 +277,7 @@ function FinalReveal({ isActive }: { isActive: boolean }) {
           <br />
           to countless memories...
           <br />
-          to my best friend forever.
+          to {bestFriendMemory ? "my best friend forever." : "my brother from another mother."}
         </p>
         <small>Thank you for choosing to stay in my life.</small>
       </motion.div>
@@ -288,6 +292,7 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
   const [sceneProgress, setSceneProgress] = useState(0);
   const wheelLockRef = useRef(false);
   const touchStartRef = useRef<number | null>(null);
+  const bestFriendMemory = isBestFriendMemory();
 
   const scenes = useMemo(
     () => [
@@ -416,7 +421,7 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
         ),
       },
       {
-        label: "Best Friend",
+        label: bestFriendMemory ? "Best Friend" : "Brother",
         content: (
           <TextReveal
             lines={[
@@ -424,7 +429,7 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
               "Family is by blood.",
               "Life proved otherwise.",
               "You became...",
-              "My Best Friend.",
+              bestFriendMemory ? "My Best Friend." : "My Brother.",
             ]}
             title="Unbreakable Bond"
           />
