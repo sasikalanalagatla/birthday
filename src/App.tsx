@@ -261,7 +261,7 @@ function FinalReveal({ isActive }: { isActive: boolean }) {
         transition={{ duration: 1.2, delay: 6.2 }}
       >
         <p className="eyebrow">Happy Birthday</p>
-        <h2>My Brother ❤️</h2>
+        <h2>My Best Friend ❤️</h2>
         <p>
           From strangers...
           <br />
@@ -273,7 +273,7 @@ function FinalReveal({ isActive }: { isActive: boolean }) {
           <br />
           to countless memories...
           <br />
-          to my brother from another mother.
+          to my best friend forever.
         </p>
         <small>Thank you for choosing to stay in my life.</small>
       </motion.div>
@@ -416,7 +416,7 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
         ),
       },
       {
-        label: "Brother",
+        label: "Best Friend",
         content: (
           <TextReveal
             lines={[
@@ -424,7 +424,7 @@ function StoryExperience({ onBack }: { onBack: () => void }) {
               "Family is by blood.",
               "Life proved otherwise.",
               "You became...",
-              "My Brother.",
+              "My Best Friend.",
             ]}
             title="Unbreakable Bond"
           />
